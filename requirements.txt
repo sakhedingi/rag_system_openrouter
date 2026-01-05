@@ -1,0 +1,7 @@
+streamlit
+requests
+pdfminer.six
+langchain
+numpy
+python-docx
+sqlalchemy
