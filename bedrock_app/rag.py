@@ -1,4 +1,5 @@
 from .chat import invoke_model_stream, chat_with_openrouter
+from .system_prompt import get_system_prompt
 
 def answer_with_context(model_id, user_question, retrieved_text, message_history=None, temperature=0.7, top_p=0.9):
     """Uses OpenRouter model to answer a question using retrieved context
@@ -23,6 +24,14 @@ def answer_with_context(model_id, user_question, retrieved_text, message_history
         "role": "user",
         "content": f"Use the following context to answer the question.\n\nContext:\n{retrieved_text}\n\nQuestion:\n{user_question}"
     })
+
+    # Prepend system prompt if not already present
+    if messages and messages[0].get("role") != "system":
+        system_prompt = get_system_prompt()
+        messages.insert(0, {
+            "role": "system",
+            "content": system_prompt
+        })
 
     try:
         response = chat_with_openrouter(
@@ -67,6 +76,14 @@ def answer_with_context_stream(model_id, user_question, retrieved_text, message_
         "role": "user",
         "content": f"Use the following context to answer the question.\n\nContext:\n{retrieved_text}\n\nQuestion:\n{user_question}"
     })
+
+    # Prepend system prompt if not already present
+    if messages and messages[0].get("role") != "system":
+        system_prompt = get_system_prompt()
+        messages.insert(0, {
+            "role": "system",
+            "content": system_prompt
+        })
 
     try:
         for chunk in invoke_model_stream(model_id, messages, temperature, top_p, character_stream):

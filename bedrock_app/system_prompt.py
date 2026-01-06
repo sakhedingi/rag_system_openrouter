@@ -51,16 +51,12 @@ When answering:
 Always reference accurate Gherkin formatting and include proper parameter names and values."""
 
 
-def get_system_prompt_for_model(model_id="claude"):
+def get_system_prompt():
     """
     Get system prompt formatted for specific model.
     Some models may need different formatting.
     """
     prompt = load_system_prompt()
-    
-    # Claude can handle the full markdown prompt directly
-    if "claude" in model_id.lower():
-        return prompt
     
     # For other models, convert markdown to plain text
     # Remove markdown formatting like # and **

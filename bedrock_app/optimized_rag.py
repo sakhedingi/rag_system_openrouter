@@ -147,18 +147,25 @@ class OptimizedRAG:
             system_prompt = load_system_prompt()
 
             # Build OpenAI-format messages for OpenRouter
-            messages = message_history.copy() if message_history else []
+            messages = []
+
+            # Add system prompt as first message with system role
+            if system_prompt:
+                messages.append({
+                    "role": "system",
+                    "content": system_prompt
+                })
+
+            # Add message history if present
+            if message_history:
+                messages.extend(message_history)
+
+            # Add user question with context
             messages.append({
                 "role": "user",
                 "content": f"Context:\n{context}\n\nQuestion:\n{user_question}"
             })
 
-            # For OpenAI models, we can use system role if supported
-            # For now, we'll prepend system prompt to the context
-            if system_prompt and len(messages) > 0:
-                # Store system prompt in user's first message or as separate system message
-                if "system_instructions" not in messages[0]:
-                    messages[0]["content"] = f"{system_prompt}\n\n{messages[0]['content']}"
 
             response = chat_with_openrouter(
                 model_id,
@@ -337,17 +344,24 @@ class OptimizedRAG:
             message_history = []
 
         try:
-            # Build OpenAI-format messages
-            messages = message_history.copy() if message_history else []
-            prompt_text = f"Context:\n{context}\n\nQuestion:\n{user_question}"
+            # Build OpenAI-format messages with system prompt
+            messages = []
 
-            # Add system prompt if available
-            if system_prompt and len(messages) > 0:
-                messages[0]["content"] = f"{system_prompt}\n\n{messages[0]['content']}"
+            # Add system prompt as first message with system role
+            if system_prompt:
+                messages.append({
+                    "role": "system",
+                    "content": system_prompt
+                })
 
+            # Add message history if present
+            if message_history:
+                messages.extend(message_history)
+
+            # Add user question with context
             messages.append({
                 "role": "user",
-                "content": prompt_text
+                "content": f"Context:\n{context}\n\nQuestion:\n{user_question}"
             })
 
             # Use streaming invoke
