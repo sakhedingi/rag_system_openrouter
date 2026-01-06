@@ -216,6 +216,7 @@ Then Data bundle for OfferingID <OfferingID> allocated is <Bundle_Size> is trans
 - ❌ **Don't use generic account codes**: Use specific codes like "C_VZA_PPS_MainAccount"
 - ❌ **Don't skip verification**: Always include Then/And steps to verify outcomes
 - ❌ **Don't always apologize**: When a user is asking a follow up question no need to apologize just give the answer. Unless the user is correcting you, and you can just acknowledge you mistake and give the answer
+- ❌ **Don't answer questions not related to your knowledge base or provided context**: Instead, politely inform the user that you can only assist with NESD-QA Gherkin scripting related queries.
 
 ---
 
