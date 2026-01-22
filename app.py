@@ -29,9 +29,9 @@ def get_optimized_rag():
 def get_prompt_cache():
     return PromptCache()
 
-st.set_page_config(page_title="SDQA AI Assistant", layout="wide")
+st.set_page_config(page_title="AI Assistant", layout="wide")
 
-st.sidebar.title("SDQA AI Assistant")
+st.sidebar.title("AI Assistant")
 mode = st.sidebar.radio("Select Assistant Mode", ["Conversational Mode or RAG", "Intelligent Document Querying Mode (RAG)"])
 chat_models, embedding_models = list_openrouter_models()
 # Select default model (Free Llama 3.3)
@@ -109,7 +109,7 @@ placeholders = render_history_into_placeholders(chat_container, st.session_state
 if mode == "Conversational Mode or RAG":
     user_input = st.chat_input("Ask AI Asstistant.")
 else:
-    user_input = st.chat_input("Ask SDQA AI Assistant.")
+    user_input = st.chat_input("Ask AI Assistant.")
 
 if mode == "Conversational Mode or RAG":
     uploaded_file = st.sidebar.file_uploader("Drop Your File Here", type=["pdf", "txt", "docx"])
