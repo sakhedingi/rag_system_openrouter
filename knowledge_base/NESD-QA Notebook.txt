@@ -260,6 +260,34 @@ This guide aligns Test Analysts and Test Automators on how to write Gherkin scri
 
 ---
 
+## 📝 Sample Gherkin Script for vServices (UI) Automation
+
+Feature: MVU-1824 Postpaid Legacy 7 Day Open Market Static Data Offers
+  @MyVodacom_ScrnShotsOnEveryStep @MyVodacom
+  Scenario Outline: MVU-1824 Postpaid Legacy 7 Day Open Market Static Data Offers
+    **Given New subscriber <Subscriber_Type> profile is <Offerring_Code>** -> This step creates a new suscriber
+    **When I navigate to vservices login page <url>** -> This step navigates to vServices
+    **And I enter username <username> And password <password>** -> This step enters vServices credentials
+    **And select the server as <server>** -> This step is used to select a server eg. fe_qa6
+    **And enter msisdn as <Subscriber_Type> into textbox** -> This step is used to enter MSISDN
+    **And enter shortstring as <shortstring> into textbox** -> This step is used to enter shortstring/shortcode
+    **And select option as <Open_Market>** -> This step is used to select options from the menu
+    And select option as <Data>
+    And select option as <7 Days>
+    And select option as <offer>
+    And select option as <paywith>
+    **And verify text as <text>** -> This step is used to verify screen text
+
+    Then Data bundle for OfferingID <OfferingID> allocated is <Data_Bundle> free unit is <FreeUnit> <Prorated>
+    And Expiry period is <Expiry_Date> with Offerring ID <OfferingID> and free unit <FreeUnit> calendar month <Prorated>
+    And verify soid as <SOID> and offeringID as <OfferingID>
+
+    Examples:
+      | Subscriber_Type | Offerring_Code | url                                        | username   | password                               | server   | shortstring | Open_Market | Data   | 7 Days   | offer        | paywith       | text                                                                                            | OfferingID | Data_Bundle | FreeUnit | Prorated | Expiry_Date | SOID   |
+      | 27828299420     | "RC09"         | "http://10.115.243.65:18080/vservices_ui/" | "dings002" | "myvodacom.vservice.Password_QA_Sakhe" | "fe_qa6" | "*main#"    | "Buy"       | "Data" | "7 Days" | "6GB - R275" | "Add to Bill" | "We have received your purchase request. Vodacom will SMS you when your purchase is successful" | 613085     | 6GB         | 5063     | "NO"     | "7 Days"    | "D525" |
+
+---
+
 **VoMS:**
 
 When Subscriber redeems valid voucher for voucher type <Voucher_type> via IVR
