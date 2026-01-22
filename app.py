@@ -215,8 +215,8 @@ if user_input:
                     try:
                         estimated_tokens_saved = len(context.split()) // 4
                         prompt_cache.cache_response(user_input, context, response, selected_chat_model['id'], tokens_saved=estimated_tokens_saved)
-                        if estimated_tokens_saved > 0:
-                            st.sidebar.info(f"[SAVED] Estimated tokens saved: {estimated_tokens_saved}")
+                        # if estimated_tokens_saved > 0:
+                        #     st.sidebar.info(f"[SAVED] Estimated tokens saved: {estimated_tokens_saved}")
                     except Exception as e:
                         print(f"[WARN] Error caching response: {e}")
 
