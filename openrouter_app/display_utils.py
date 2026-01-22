@@ -1,6 +1,6 @@
 def display_chat_models(chat_models):
     print("\n" + "=" * 80)
-    print("AVAILABLE CHAT MODELS IN AMAZON BEDROCK")
+    print("AVAILABLE CHAT MODELS IN OPENROUTER")
     print("=" * 80 + "\n")
 
     if chat_models:
@@ -9,7 +9,7 @@ def display_chat_models(chat_models):
 
 def display_embed_models(embedding_models):
     print("\n" + "=" * 80)
-    print("AVAILABLE EMBED MODELS IN AMAZON BEDROCK")
+    print("AVAILABLE EMBED MODELS IN OPENROUTER")
     print("=" * 80 + "\n")
 
     if embedding_models:

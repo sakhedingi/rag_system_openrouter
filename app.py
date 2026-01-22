@@ -1,11 +1,11 @@
 import streamlit as st
-from bedrock_app.chat import chat_stream
-from bedrock_app.semantic_search import build_vector_store_from_folder, semantic_search_local
-from bedrock_app.rag import answer_with_context_stream
-from bedrock_app.optimized_rag import OptimizedRAG
-from bedrock_app.prompt_cache import PromptCache
-from bedrock_app.openrouter_client import test_openrouter_connection
-from bedrock_app.openrouter_models import list_openrouter_models
+from openrouter_app.chat import chat_stream
+from openrouter_app.semantic_search import build_vector_store_from_folder, semantic_search_local
+from openrouter_app.rag import answer_with_context_stream
+from openrouter_app.optimized_rag import OptimizedRAG
+from openrouter_app.prompt_cache import PromptCache
+from openrouter_app.openrouter_client import test_openrouter_connection
+from openrouter_app.openrouter_models import list_openrouter_models
 import os
 
 os.makedirs("./temp_docs", exist_ok=True)
@@ -121,7 +121,7 @@ if mode == "Conversational Mode or RAG":
         with open(temp_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
         # Build vector store from uploaded document
-        embed_model = embedding_models[0]
+        embed_model = embedding_models[1]
         st.session_state.temp_vector_store = build_vector_store_from_folder("./temp_docs", embed_model['id'])
 
 # Only generate response if there's new input
@@ -270,7 +270,7 @@ if user_input:
             # Prevent the generic append block below from duplicating entries
             skip_generic_append = True
     else:
-        embed_model = embedding_models[0]
+        embed_model = embedding_models[1]
         optimized_rag = get_optimized_rag()
 
         # Append user message to history immediately and render placeholder
