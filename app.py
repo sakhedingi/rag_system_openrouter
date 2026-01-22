@@ -48,7 +48,7 @@ temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, val
 top_p = st.sidebar.slider("Top-p (nucleus sampling)", min_value=0.0, max_value=1.0, value=0.9, step=0.05)
 
 if mode == "Intelligent Document Querying Mode (RAG)":
-    embed_model = embedding_models[0]
+    embed_model = embedding_models[1]
     st.sidebar.markdown(f"**Embedding Model:** {embed_model['name']}")
     kb_folder = "./knowledge_base"
     st.sidebar.markdown(f"**Knowledge Base:** `{kb_folder}`")
