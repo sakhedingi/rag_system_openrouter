@@ -278,9 +278,9 @@ Feature: MVU-1824 Postpaid Legacy 7 Day Open Market Static Data Offers
     And select option as <paywith>
     **And verify text as <text>** -> This step is used to verify screen text
 
-    Then Data bundle for OfferingID <OfferingID> allocated is <Data_Bundle> free unit is <FreeUnit> <Prorated>
-    And Expiry period is <Expiry_Date> with Offerring ID <OfferingID> and free unit <FreeUnit> calendar month <Prorated>
-    And verify soid as <SOID> and offeringID as <OfferingID>
+    **Then Data bundle for OfferingID <OfferingID> allocated is <Data_Bundle> free unit is <FreeUnit> <Prorated>** -> This step is used to verify bundle allocation
+    **And Expiry period is <Expiry_Date> with Offerring ID <OfferingID> and free unit <FreeUnit> calendar month <Prorated>** -> This step is used to verify bundle expiry period or date
+    **And verify soid as <SOID> and offeringID as <OfferingID>** -> This step is used to verify SOID and the offerign code
 
     Examples:
       | Subscriber_Type | Offerring_Code | url                                        | username   | password                               | server   | shortstring | Open_Market | Data   | 7 Days   | offer        | paywith       | text                                                                                            | OfferingID | Data_Bundle | FreeUnit | Prorated | Expiry_Date | SOID   |
