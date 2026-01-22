@@ -5,7 +5,7 @@ List of available OpenRouter models (OpenAI and other providers)
 # OpenAI models available through OpenRouter
 OPENROUTER_MODELS = {
     "chat": [
-        {"id": "meta-llama/llama-4-maverick:free", "name": "Meta Llama 3.3 70B (Free!)", "provider": "Meta"},
+        {"id": "meta-llama/llama-4-maverick:free", "name": "Meta Llama 4 Maverick (Free)", "provider": "Meta"},
         {"id": "openai/gpt-4o", "name": "OpenAI GPT-4o", "provider": "OpenAI"},
         # {"id": "openai/gpt-4-turbo", "name": "OpenAI GPT-4 Turbo", "provider": "OpenAI"},
         # {"id": "openai/gpt-4-32k", "name": "OpenAI GPT-4 32K", "provider": "OpenAI"},
