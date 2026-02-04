@@ -1,0 +1,11 @@
+[theme]
+base = "light"
+
+# Brand Colors
+primaryColor = "#E60000"              # Vodafone Red (buttons, accents)
+backgroundColor = "#FFFFFF"           # Chat background
+secondaryBackgroundColor = "#F5F5F5"  # Sidebar / message container background
+textColor = "#333333"                 # Vodafone grey (better contrast)
+
+# Typography
+font = "sans serif"

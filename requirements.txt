@@ -5,3 +5,6 @@ langchain
 numpy
 python-docx
 sqlalchemy
+fastapi
+uvicorn
+pydantic
