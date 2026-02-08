@@ -267,7 +267,7 @@ mode = st.sidebar.radio(
 
 chat_models, embedding_models = list_openrouter_models()
 
-selected_chat_name = "Anthropic Claude 3.5 Sonnet"
+selected_chat_name = "Free Models Router"
 selected_chat_model = chat_models[0]
 for chat_model in chat_models:
     if chat_model.get("name") == selected_chat_name:
