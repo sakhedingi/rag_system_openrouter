@@ -60,6 +60,16 @@ class OptimizedRAG:
                 print(f"[MEM] Found {len(past_contexts)} similar contexts from memory")
                 stats["memory_reused"] = True
                 stats["optimization_source"].append("context_memory")
+                
+                # Check for exact match and return it directly
+                for past_ctx in past_contexts:
+                    if past_ctx.query.strip().lower() == user_question.strip().lower():
+                        print(f"[MEM] Exact match found! Returning cached response")
+                        return {
+                            "response": past_ctx.response,
+                            "stats": stats,
+                            "from_memory": True
+                        }
 
         retrieved_results = self.vector_store_manager.semantic_search(
             user_question, embed_model_id, top_k=3
@@ -248,9 +258,9 @@ class OptimizedRAG:
                 stats["cache_hit"] = True
                 stats["tokens_saved"] = cached_response['tokens_saved']
                 stats["optimization_source"].append("prompt_cache")
-                # Yield cached response token by token for consistency
-                for token in cached_response['response'].split():
-                    yield token + " ", stats.copy()
+                # Yield cached response character by character to preserve formatting
+                for char in cached_response['response']:
+                    yield char, stats.copy()
                 return
 
         # Retrieve past contexts
@@ -261,6 +271,15 @@ class OptimizedRAG:
                 print(f"[MEM] Found {len(past_contexts)} similar contexts from memory")
                 stats["memory_reused"] = True
                 stats["optimization_source"].append("context_memory")
+                
+                # If we have an exact match from memory, return it directly with formatting preserved
+                for past_ctx in past_contexts:
+                    if past_ctx.query.strip().lower() == user_question.strip().lower():
+                        print(f"[MEM] Exact match found! Returning cached response with formatting")
+                        # Yield the cached response character by character to preserve formatting
+                        for char in past_ctx.response:
+                            yield char, stats.copy()
+                        return
 
         # Retrieve from vector store
         retrieved_results = self.vector_store_manager.semantic_search(
