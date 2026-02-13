@@ -1,7 +1,6 @@
 """
 Optimized RAG with CAG and Memory Integration
 Combines pre-vectorization, cache-augmented generation, and memory layer
-Now uses OpenRouter API instead of AWS Bedrock
 """
 from typing import Dict, List, Optional
 from .vector_store_manager import VectorStoreManager
