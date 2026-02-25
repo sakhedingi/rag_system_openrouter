@@ -44,185 +44,12 @@ st.set_page_config(page_title="SDQA Assistant", layout="wide")
 # ----------------------------
 # UI Styling (CSS)
 # ----------------------------
-st.markdown(
-    """
-<style>
-:root{
-  --voda-red: #E60000;
-  --voda-red-dark: #C20000;
-  --text-dark: #333333;
-  --bot-bubble: #F2F3F5;
-  --page-bg: #FFFFFF;
-  --header-bg: #FFFFFF;
-}
+def load_css(file_path: str):
+    with open(file_path, "r") as f:
+        css_content = f.read()
+    st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
 
-html, body, [data-testid="stAppViewContainer"] { background: var(--page-bg) !important; }
-
-/* Center chats */
-section.main > div.block-container {
-  max-width: 1100px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
-
-/* Remove grey backgrounds from common wrappers */
-[data-testid="stLayoutWrapper"],
-[data-testid="stVerticalBlock"],
-[data-testid="stElementContainer"],
-[data-testid="stMarkdown"],
-[data-testid="stMarkdownContainer"],
-[data-testid="stAppViewContainer"],
-[data-testid="stMain"],
-[data-testid="stBlock"] {
-  background: transparent !important;
-}
-
-/* Header */
-.app-header {
-  position: sticky; top: 0; z-index: 1000;
-  display: flex; align-items: center; gap: 10px;
-  background: var(--header-bg) !important;
-  padding: 6px 10px; border-bottom: 1px solid #e6e6e6;
-}
-.app-header img.logo { height: 20px; width: auto; }
-.app-header .title { font-weight: 600; color: var(--text-dark); font-size: 1.0rem; }
-
-/* Remove avatars */
-[data-testid="stChatMessageAvatarUser"],
-[data-testid="stChatMessageAvatarAssistant"],
-[data-testid="stChatMessageAvatar"] {
-  display: none !important;
-}
-
-/* Space between chat bubbles */
-[data-testid="stChatMessage"] {
-  background: transparent !important;
-  padding: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  margin: 0 0 20px 0 !important;
-}
-
-/* Chat content container */
-[data-testid="stChatMessageContent"] {
-  width: 100% !important;
-  background: transparent !important;
-  padding: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  display: flex !important;
-  align-items: flex-start !important;
-  justify-content: flex-start !important; /* leave alignment left for now */
-}
-
-/* USER: keep your custom bubble */
-[data-testid="stChatMessageContent"][aria-label*="user"] {
-  justify-content: flex-start !important;
-}
-
-/* USER: remove any background on wrapper blocks BUT keep .user-bubble intact */
-[data-testid="stChatMessageContent"][aria-label*="user"] *:not(.user-bubble) {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-/* User bubble (RED) */
-.user-bubble {
-  display: inline-block !important;
-  padding: 10px 12px !important;
-  border-radius: 16px 16px 4px 16px !important;
-  line-height: 1.35 !important;
-  word-wrap: break-word !important;
-  background: var(--voda-red) !important;
-  color: #FFFFFF !important;
-  box-shadow: 0 1px 1px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06) !important;
-  width: fit-content !important;
-  max-width: min(900px, 92%) !important;
-}
-
-/* ---------------------------------------------------------
-   ASSISTANT bubble fix:
-   Apply bubble styling to the rendered markdown container so the
-   background wraps the FULL height (prevents the "cut off" look).
---------------------------------------------------------- */
-
-/* Remove any styling from the immediate wrapper so it doesn't interfere */
-[data-testid="stChatMessageContent"]:not([aria-label*="user"]) > div {
-  background: transparent !important;
-  padding: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
-
-/* Apply the bubble to the actual markdown container */
-[data-testid="stChatMessageContent"]:not([aria-label*="user"]) [data-testid="stMarkdownContainer"] {
-  background: var(--bot-bubble) !important;
-  border-radius: 16px 16px 16px 4px !important;
-  padding: 12px 14px !important;
-  box-shadow: 0 1px 1px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06) !important;
-  display: inline-block !important;
-  width: fit-content !important;
-  max-width: min(900px, 92%) !important;
-  overflow: visible !important;
-  line-height: 1.45 !important;
-}
-
-/* Normalize markdown spacing inside assistant bubble */
-[data-testid="stChatMessageContent"]:not([aria-label*="user"]) [data-testid="stMarkdownContainer"] p {
-  margin: 0 !important;
-}
-[data-testid="stChatMessageContent"]:not([aria-label*="user"]) [data-testid="stMarkdownContainer"] p + p {
-  margin-top: 0.6rem !important;
-}
-
-[data-testid="stChatMessageContent"]:not([aria-label*="user"]) [data-testid="stMarkdownContainer"] ul,
-[data-testid="stChatMessageContent"]:not([aria-label*="user"]) [data-testid="stMarkdownContainer"] ol {
-  margin: 0.25rem 0 0.25rem 1.2rem !important;
-}
-
-/* Sticky input bar */
-[data-testid="stChatInput"] {
-  position: sticky; bottom: 0; z-index: 999;
-  background: var(--page-bg) !important;
-  border-top: 1px solid #e6e6e6;
-  padding-top: 0.5rem;
-  backdrop-filter: blur(2px);
-}
-
-[data-testid="stChatInput"] textarea {
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-  border-radius: 10px !important;
-}
-
-[data-testid="stChatInput"] textarea:focus {
-  box-shadow: 0 0 0 2px rgba(230, 0, 0, 0.15) !important;
-  outline: none !important;
-}
-
-[data-testid="stChatInput"] button[kind="primary"] {
-  background: var(--voda-red) !important;
-  border: 1px solid var(--voda-red) !important;
-  color: #FFFFFF !important;
-}
-
-[data-testid="stChatInput"] button[kind="primary"]:hover {
-  background: var(--voda-red-dark) !important;
-  border-color: var(--voda-red-dark) !important;
-}
-
-@media (max-width: 768px) {
-  section.main > div.block-container { max-width: 92vw !important; }
-  [data-testid="stChatMessageContent"]:not([aria-label*="user"]) [data-testid="stMarkdownContainer"] { max-width: 92vw !important; }
-  .user-bubble { max-width: 92vw !important; }
-  .app-header .title { font-size: 0.9rem; }
-}
-</style>
-""",
-    unsafe_allow_html=True,
-)
-
+load_css("css/styles.css")
 
 # ----------------------------
 # Top header (logo + title)
@@ -267,7 +94,7 @@ mode = st.sidebar.radio(
 
 chat_models, embedding_models = list_openrouter_models()
 
-selected_chat_name = "Anthropic Claude 3.5 Sonnet"
+selected_chat_name = "Claude 3.5 Sonnet"
 selected_chat_model = chat_models[0]
 for chat_model in chat_models:
     if chat_model.get("name") == selected_chat_name:
@@ -295,6 +122,8 @@ if mode == "Intelligent Document Querying Mode (RAG)":
             st.session_state.kb_initialized = True
 
 logo_b64 = img_to_base64("assets/download1.png")
+avater_b64 = img_to_base64("assets/user-4254_1024.png")
+
 if mode == "Conversational Mode or RAG":
         st.markdown(
         f"""
@@ -310,7 +139,7 @@ else:
         f"""
 <div class="app-header">
   <img class="logo" src="data:image/png;base64,{logo_b64}" alt="Logo"/>
-  <span class="title">Ask a question based on your knowledge base....</span>
+  <span class="title">Ask a question based on your knowledge base...</span>
 </div><br>
 """,
         unsafe_allow_html=True,
@@ -330,7 +159,8 @@ def render_history(container, history):
     for msg in history:
         ph = container.empty()
         with ph.container():
-            with st.chat_message(msg["role"]):
+            avatar = "assets/user-4254_1024.png" if msg["role"] == "user" else "https://help.vodacom.co.za/static/media/tobi-chat.8fcbfe07.svg"
+            with st.chat_message(msg["role"], avatar=avatar):
                 cp = st.empty()
                 render_message(msg["role"], msg["content"], placeholder=cp)
                 placeholders.append(cp)
@@ -365,7 +195,7 @@ if user_input:
                 current_history.append({"role": "user", "content": user_input})
                 ph = chat_container.empty()
                 with ph.container():
-                    with st.chat_message("user"):
+                    with st.chat_message("user", avatar="assets/user-4254_1024.png"):
                         cp = st.empty()
                         render_message("user", user_input, placeholder=cp)
                         placeholders.append(cp)
@@ -382,7 +212,7 @@ if user_input:
 
                 ph = chat_container.empty()
                 with ph.container():
-                    with st.chat_message("assistant"):
+                    with st.chat_message("assistant", avatar="https://help.vodacom.co.za/static/media/tobi-chat.8fcbfe07.svg"):
                         assistant_cp = st.empty()
                         placeholders.append(assistant_cp)
                         full_response = ""
@@ -401,7 +231,7 @@ if user_input:
             current_history.append({"role": "user", "content": user_input})
             ph = chat_container.empty()
             with ph.container():
-                with st.chat_message("user"):
+                with st.chat_message("user", avatar="assets/user-4254_1024.png"):
                     cp = st.empty()
                     render_message("user", user_input, placeholder=cp)
                     placeholders.append(cp)
@@ -417,7 +247,7 @@ if user_input:
 
             ph = chat_container.empty()
             with ph.container():
-                with st.chat_message("assistant"):
+                with st.chat_message("assistant", avatar="https://help.vodacom.co.za/static/media/tobi-chat.8fcbfe07.svg"):
                     assistant_cp = st.empty()
                     placeholders.append(assistant_cp)
                     full_response = ""
@@ -436,7 +266,7 @@ if user_input:
         current_history.append({"role": "user", "content": user_input})
         ph = chat_container.empty()
         with ph.container():
-            with st.chat_message("user"):
+            with st.chat_message("user", avatar="assets/user-4254_1024.png"):
                 cp = st.empty()
                 render_message("user", user_input, placeholder=cp)
                 placeholders.append(cp)
@@ -455,7 +285,7 @@ if user_input:
 
         ph = chat_container.empty()
         with ph.container():
-            with st.chat_message("assistant"):
+            with st.chat_message("assistant", avatar="https://help.vodacom.co.za/static/media/tobi-chat.8fcbfe07.svg"):
                 assistant_cp = st.empty()
                 placeholders.append(assistant_cp)
                 full_response = ""
