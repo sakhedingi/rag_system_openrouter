@@ -7,7 +7,9 @@
   --header-bg: #FFFFFF;
 }
 
-html, body, [data-testid="stAppViewContainer"] { background: var(--page-bg) !important; }
+html, body, [data-testid="stAppViewContainer"] { 
+  background: var(--page-bg) !important;
+}
 
 /* Center chats */
 section.main > div.block-container {
@@ -168,4 +170,22 @@ section.main > div.block-container {
   [data-testid="stChatMessageContent"]:not([aria-label*="user"]) [data-testid="stMarkdownContainer"] { max-width: 92vw !important; }
   .user-bubble { max-width: 92vw !important; }
   .app-header .title { font-size: 0.9rem; }
+}
+
+/* Sidebar styling */
+[data-testid="stSidebar"] {
+  width: 400px !important;
+}
+
+[data-testid="stSidebarContent"] {
+  width: 100% !important;
+}
+
+/* Prevent text wrapping in sidebar */
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] .stRadio label,
+[data-testid="stSidebar"] .stSelectbox label {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }

@@ -2,6 +2,7 @@ import os
 from pdfminer.high_level import extract_text as extract_pdf_text
 from docx import Document
 from .embedding import embed_with_openrouter, cosine_similarity
+from .image_handler import is_image_file, extract_text_with_fallback
 
 def load_documents_from_folder(folder_path):
     documents = []
@@ -27,6 +28,15 @@ def load_documents_from_folder(folder_path):
                 content = "\n".join([para.text for para in doc.paragraphs])
             except Exception as e:
                 print(f"[ERROR] Failed to read DOCX: {filename}  {e}")
+                continue
+        elif is_image_file(full_path):
+            try:
+                content = extract_text_with_fallback(full_path)
+                if not content:
+                    print(f"[SKIP] No content extracted from image: {filename}")
+                    continue
+            except Exception as e:
+                print(f"[ERROR] Failed to process image: {filename}  {e}")
                 continue
         else:
             continue

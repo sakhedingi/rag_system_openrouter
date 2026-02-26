@@ -173,7 +173,7 @@ user_input = st.chat_input("Ask AI Assistant.")
 
 uploaded_file = None
 if mode == "Conversational Mode or RAG":
-    uploaded_file = st.sidebar.file_uploader("Drop Your File Here", type=["pdf", "txt", "docx"])
+    uploaded_file = st.sidebar.file_uploader("Drop Your File Here", type=["pdf", "txt", "docx", "png", "jpg", "jpeg", "gif", "bmp", "webp"])
     if uploaded_file:
         temp_path = f"./temp_docs/{uploaded_file.name}"
         with open(temp_path, "wb") as f:

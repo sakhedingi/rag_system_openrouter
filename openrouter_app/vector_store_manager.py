@@ -62,7 +62,7 @@ class VectorStoreManager:
         # Check if any files have changed
         current_files = {}
         for filename in os.listdir(folder_path):
-            if filename.endswith(('.txt', '.pdf', '.docx')):
+            if filename.endswith(('.txt', '.pdf', '.docx', '.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.tiff', '.tif')):
                 file_path = os.path.join(folder_path, filename)
                 current_files[filename] = self._get_file_hash(file_path)
         
