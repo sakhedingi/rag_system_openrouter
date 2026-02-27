@@ -1,6 +1,12 @@
 import json
 import requests
 from .openrouter_client import get_openrouter_client
+from .model_fallback import get_fallback_manager
+
+
+class RateLimitError(Exception):
+    """Exception raised when a model is rate limited"""
+    pass
 
 
 def invoke_model_stream(model_id, messages, temperature=0.7, top_p=0.9, character_stream=True):
@@ -51,7 +57,8 @@ def invoke_model_stream(model_id, messages, temperature=0.7, top_p=0.9, characte
             elif response.status_code == 401:
                 yield "Error: Invalid API key. Please check your OPENROUTER_API_KEY environment variable."
             elif response.status_code == 429:
-                yield "Error: Rate limited. Please wait a moment and try again."
+                # Raise exception for rate limit so fallback manager can catch it
+                raise RateLimitError(f"Model {model_id} rate limited: {error_msg}")
             else:
                 yield f"Error: {response.status_code} - {error_msg}"
             return
@@ -88,6 +95,74 @@ def invoke_model_stream(model_id, messages, temperature=0.7, top_p=0.9, characte
     except Exception as e:
         print(f"Error streaming from model: {e}")
         yield f"Error: {str(e)}"
+
+
+def invoke_model_with_fallback(model_id, messages, temperature=0.7, top_p=0.9, character_stream=True):
+    """
+    Stream response with automatic fallback to other models on rate limit.
+    
+    Args:
+        model_id: Preferred OpenRouter model ID
+        messages: List of message dicts with 'role' and 'content'
+        temperature: Sampling temperature (0.0-2.0)
+        top_p: Nucleus sampling parameter (0.0-1.0)
+        character_stream: If True, break larger chunks into character-level streams
+    
+    Yields:
+        Text tokens from the model response
+    """
+    fallback_manager = get_fallback_manager()
+    
+    # Start with preferred model or get next available
+    current_model = None
+    for model in fallback_manager.available_models:
+        if model["id"] == model_id:
+            current_model = model
+            break
+    
+    if not current_model:
+        current_model = fallback_manager.get_next_model()
+    
+    max_retries = len(fallback_manager.available_models)
+    retry_count = 0
+    
+    while retry_count < max_retries:
+        try:
+            current_model_id = current_model["id"]
+            print(f"[ATTEMPT {retry_count + 1}] Using model: {current_model['name']}")
+            
+            # Try to stream with current model
+            for token in invoke_model_stream(current_model_id, messages, temperature, top_p, character_stream):
+                yield token
+            
+            # Success! Exit
+            return
+            
+        except RateLimitError as e:
+            print(f"[RATE LIMIT] {current_model['name']} ({current_model_id})")
+            fallback_manager.mark_rate_limited(current_model_id, cooldown_seconds=60)
+            
+            # Get next available model
+            available_models = fallback_manager.get_available_models()
+            if not available_models:
+                yield f"\n\n[ERROR] All models rate limited. Please try again in a few minutes."
+                return
+            
+            current_model = fallback_manager.get_next_model()
+            retry_count += 1
+            
+        except Exception as e:
+            print(f"[ERROR] {current_model['name']}: {str(e)}")
+            # For other errors, try next model
+            available_models = fallback_manager.get_available_models()
+            if not available_models:
+                yield f"\n\n[ERROR] No models available. {str(e)}"
+                return
+            
+            current_model = fallback_manager.get_next_model()
+            retry_count += 1
+    
+    yield "\n\n[ERROR] All fallback attempts exhausted."
 
 
 def chat_with_openrouter(model_id, user_message, message_history=None, temperature=0.7, top_p=0.9):
@@ -178,8 +253,8 @@ def chat_stream(model_id, user_message, message_history=None, temperature=0.7, t
 
         messages = message_history + [{"role": "user", "content": user_message}]
 
-        # Delegate to the generic streaming helper
-        for chunk in invoke_model_stream(model_id, messages, temperature, top_p, character_stream):
+        # Use fallback-enabled streaming helper
+        for chunk in invoke_model_with_fallback(model_id, messages, temperature, top_p, character_stream):
             yield chunk
 
     except Exception as e:

@@ -1,0 +1,116 @@
+"""
+MODEL FALLBACK SYSTEM GUIDE
+============================
+
+The fallback system automatically rotates through free models when one hits rate limits.
+This ensures your chat continues working even if your primary model reaches rate limits.
+
+AVAILABLE FREE MODELS:
+- Meta Llama 3.3 70B
+- GPT-OSS 120B
+- Arcee Trinity Large
+- Mistral Small 3.1
+- Gemini 2.0 Flash
+- Step 3.5 Flash
+- DeepSeek R1
+
+FEATURES:
+=========
+
+1. AUTOMATIC RATE LIMIT DETECTION
+   - Detects HTTP 429 (Too Many Requests) responses
+   - Automatically marks model as rate-limited
+   - Sets a 60-second cooldown period
+
+2. MODEL ROTATION
+   - Tries next available model when rate limit is hit
+   - Preserves conversation context across model switches
+   - Notifies user of model change
+
+3. COOLDOWN TRACKING
+   - Models have a 60-second cooldown after rate limit
+   - After cooldown expires, models become available again
+   - All models can be reset manually if needed
+
+USAGE:
+======
+
+The fallback system is automatically enabled in chat_stream():
+
+    from openrouter_app.chat import chat_stream
+    
+    for token in chat_stream(model_id, user_message):
+        print(token, end='', flush=True)
+
+If the specified model hits rate limit, the system will:
+1. Catch the 429 error
+2. Mark that model as rate-limited
+3. Switch to the next available model
+4. Continue streaming the response
+
+MONITORING STATUS:
+==================
+
+Check which models are available/rate-limited:
+
+    from openrouter_app.model_fallback import get_fallback_manager
+    
+    manager = get_fallback_manager()
+    status = manager.get_model_status()
+    
+    print("Available models:", status['available'])
+    print("Rate-limited models:", status['rate_limited'])
+
+MANUAL CONTROL:
+===============
+
+Reset all model cooldowns (for testing):
+
+    manager = get_fallback_manager()
+    manager.reset_cooldowns()
+
+Mark a model as rate-limited:
+
+    manager.mark_rate_limited("meta-llama/llama-3.3-70b-instruct:free", cooldown_seconds=120)
+
+Get next available model:
+
+    next_model = manager.get_next_model()
+    print(f"Using model: {next_model['name']}")
+
+INTEGRATION WITH RAG:
+====================
+
+The RAG mode also needs fallback support. Update rag.py and optimized_rag.py 
+similarly to use invoke_model_with_fallback() instead of direct API calls.
+
+DEBUGGING:
+==========
+
+Enable detailed logging to see fallback in action:
+
+    [ATTEMPT 1] Using model: Llama 3.3 70B
+    [RATE LIMIT] Llama 3.3 70B (meta-llama/llama-3.3-70b-instruct:free)
+    [ATTEMPT 2] Using model: GPT-OSS 120B
+    [OK] Response received from GPT-OSS 120B
+
+ERROR HANDLING:
+===============
+
+If all models are rate-limited:
+    - System displays: "[ERROR] All models rate limited. Please try again in a few minutes."
+
+If all models fail after max retries:
+    - System displays: "[ERROR] All fallback attempts exhausted."
+
+FUTURE ENHANCEMENTS:
+====================
+
+1. Per-user rate limit tracking
+2. Cost optimization (prefer cheaper models)
+3. Model performance metrics tracking
+4. User-configured cooldown periods
+5. Graceful degradation with cached responses
+"""
+
+# This is a guide file - copy this content to your documentation or README

@@ -7,7 +7,7 @@ from .vector_store_manager import VectorStoreManager
 from .prompt_cache import PromptCache
 from .context_memory import ContextMemoryStore
 from .system_prompt import load_system_prompt
-from .chat import invoke_model_stream, chat_with_openrouter
+from .chat import invoke_model_stream, invoke_model_with_fallback, chat_with_openrouter
 
 class OptimizedRAG:
     """Integrated RAG system with vectorization, caching, and memory"""
@@ -382,8 +382,8 @@ class OptimizedRAG:
                 "content": f"Context:\n{context}\n\nQuestion:\n{user_question}"
             })
 
-            # Use streaming invoke
-            for token in invoke_model_stream(model_id, messages, temperature, top_p, character_stream=True):
+            # Use streaming invoke with fallback
+            for token in invoke_model_with_fallback(model_id, messages, temperature, top_p, character_stream=True):
                 yield token
 
         except Exception as e:

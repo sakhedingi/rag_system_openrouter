@@ -1,4 +1,4 @@
-from .chat import invoke_model_stream, chat_with_openrouter
+from .chat import invoke_model_stream, invoke_model_with_fallback, chat_with_openrouter
 from .system_prompt import get_system_prompt
 
 def answer_with_context(model_id, user_question, retrieved_text, message_history=None, temperature=0.7, top_p=0.9):
@@ -86,7 +86,7 @@ def answer_with_context_stream(model_id, user_question, retrieved_text, message_
         })
 
     try:
-        for chunk in invoke_model_stream(model_id, messages, temperature, top_p, character_stream):
+        for chunk in invoke_model_with_fallback(model_id, messages, temperature, top_p, character_stream):
             yield chunk
     except Exception as e:
         print(f"Error streaming answer_with_context: {e}")
