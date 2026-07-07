@@ -38,7 +38,7 @@ def get_prompt_cache():
     return PromptCache()
 
 
-st.set_page_config(page_title="SDQA Assistant", layout="wide")
+st.set_page_config(page_title="NESD-QA Assistant", layout="wide")
 
 
 # ----------------------------
@@ -85,16 +85,21 @@ def render_message(role: str, content: str, placeholder=None):
 with st.sidebar:
     st.image("assets/download.png", width=150)
 
-st.sidebar.title("SDQA Assistant")
+st.sidebar.title("NESD-QA Assistant")
+
+#mode = st.sidebar.radio(
+#    "Select Assistant Mode",
+#    ["Conversational Mode or RAG", "Intelligent Document Querying Mode (RAG)"],
+#)
 
 mode = st.sidebar.radio(
-    "Select Assistant Mode",
-    ["Conversational Mode or RAG", "Intelligent Document Querying Mode (RAG)"],
+     "Assistant Mode",
+    ["Intelligent Document Querying (NESD-QA)"],
 )
 
 chat_models, embedding_models = list_openrouter_models()
 
-selected_chat_name = "Meta Llama 3.3 70B"
+selected_chat_name = "Claude 3.5 Sonnet"
 selected_chat_model = chat_models[0]
 for chat_model in chat_models:
     if chat_model.get("name") == selected_chat_name:
@@ -109,7 +114,7 @@ st.sidebar.markdown("### Model Behavior Settings")
 temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, value=0.7, step=0.05)
 top_p = st.sidebar.slider("Top-p (nucleus sampling)", min_value=0.0, max_value=1.0, value=0.9, step=0.05)
 
-if mode == "Intelligent Document Querying Mode (RAG)":
+if mode == "Intelligent Document Querying (NESD-QA)":
     embed_model = embedding_models[1]
     st.sidebar.markdown(f"**Embedding Model:** {embed_model['name']}")
     kb_folder = "./knowledge_base"
@@ -148,7 +153,7 @@ else:
 if "mode_histories" not in st.session_state:
     st.session_state.mode_histories = {
         "Conversational Mode or RAG": [],
-        "Intelligent Document Querying Mode (RAG)": [],
+        "Intelligent Document Querying (NESD-QA)": [],
     }
 
 chat_container = st.container()
@@ -169,11 +174,11 @@ def render_history(container, history):
 
 placeholders = render_history(chat_container, st.session_state.mode_histories[mode])
 
-user_input = st.chat_input("Ask AI Assistant.")
+user_input = st.chat_input("Ask AI Assistant")
 
 uploaded_file = None
 if mode == "Conversational Mode or RAG":
-    uploaded_file = st.sidebar.file_uploader("Drop Your File Here", type=["pdf", "txt", "docx", "png", "jpg", "jpeg", "gif", "bmp", "webp"])
+    uploaded_file = st.sidebar.file_uploader("Drop Your File Here", type=["pdf", "txt", "docx"])
     if uploaded_file:
         temp_path = f"./temp_docs/{uploaded_file.name}"
         with open(temp_path, "wb") as f:

@@ -7,9 +7,7 @@
   --header-bg: #FFFFFF;
 }
 
-html, body, [data-testid="stAppViewContainer"] { 
-  background: var(--page-bg) !important;
-}
+html, body, [data-testid="stAppViewContainer"] { background: var(--page-bg) !important; }
 
 /* Center chats */
 section.main > div.block-container {

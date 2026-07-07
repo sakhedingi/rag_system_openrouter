@@ -3,5 +3,5 @@ requests
 pdfminer.six
 numpy
 python-docx
-Pillow
-easyocr
+#Pillow
+#easyocr
