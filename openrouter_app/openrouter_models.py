@@ -5,7 +5,7 @@ List of available OpenRouter models (OpenAI and other providers)
 # OpenAI models available through OpenRouter
 OPENROUTER_MODELS = {
     "chat": [
-        {"id": "anthropic/claude-3.5-haiku", "name": "Claude 3.5 Haiku", "provider": "Anthropic"},
+        {"id": "anthropic/claude-sonnet-5", "name": "Claude Sonnet 5", "provider": "Anthropic"},
         #{"id": "deepseek/deepseek-r1", "name": "DeepSeek-R1", "provider": "DeepSeek"},
         #{"id": "google/gemini-2.0-flash-001", "name": "Gemini 2.0 Flash", "provider": "Google"},
         #{"id": "meta-llama/llama-3.3-70b-instruct:free", "name": "Meta Llama 3.3 70B (Free!)", "provider": "Meta"},
